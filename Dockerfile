@@ -42,3 +42,6 @@ RUN docker-php-ext-configure \
     zip
     
 COPY opcache.ini $PHP_INI_DIR/conf.d/
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
