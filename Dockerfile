@@ -42,10 +42,13 @@ RUN docker-php-ext-configure \
     exif \
     zip
     
-RUN sed -i 's/listen = 9000/listen = /run/php/php7.4-fpm.sock/' /usr/local/etc/php-fpm.d/zz-docker.conf &&\
-    sed -i 's/user nginx/user www-data/' /etc/nginx/nginx.conf &&\
-    mkdir /run/nginx && touch /run/nginx/nginx.pid &&\
-    mkdir /run/php && touch /run/php/php7.4-fpm.sock
+COPY run.sh /app/run.sh
+    
+RUN sed -i 's/listen = 9000/listen = /run/php/php7.4-fpm.sock/' /usr/local/etc/php-fpm.d/zz-docker.conf && \
+    sed -i 's/user nginx/user www-data/' /etc/nginx/nginx.conf && \
+    mkdir /run/nginx && touch /run/nginx/nginx.pid && \
+    mkdir /run/php && touch /run/php/php7.4-fpm.sock && \
+    chmod +x /app/run.sh
     
 COPY opcache.ini $PHP_INI_DIR/conf.d/
 COPY nginx.www.conf /etc/nginx/http.d/default.conf
@@ -55,6 +58,6 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 EXPOSE 80
 EXPOSE 9000
 
-ENTRYPOINT ["/run.sh"]
+ENTRYPOINT ["/app/run.sh"]
 
 
