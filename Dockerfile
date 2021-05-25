@@ -40,3 +40,5 @@ RUN docker-php-ext-configure \
     bcmath \
     exif \
     zip
+    
+COPY opcache.ini $PHP_INI_DIR/conf.d/
