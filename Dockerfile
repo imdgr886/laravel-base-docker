@@ -6,7 +6,8 @@ RUN apk add --no-cache libpng libpng-dev \
     libxml2-dev \
     bzip2-dev \
     zip \
-    libzip-dev
+    libzip-dev \
+    nginx
 
 # Add Production Dependencies
 RUN apk add --update --no-cache \
@@ -41,8 +42,16 @@ RUN docker-php-ext-configure \
     exif \
     zip
     
-RUN sed -i 's/listen = 9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN sed -i 's/listen = 9000/listen = /run/php/php7.4-fpm.sock/' /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN sed -i 's/user nginx/user www-data/' /etc/nginx/nginx.conf
 COPY opcache.ini $PHP_INI_DIR/conf.d/
+COPY nginx.www.conf /etc/nginx/http.d/default.conf
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+EXPOSE 80
+EXPOSE 9000
+
+ENTRYPOINT ["/run.sh"]
+
 
