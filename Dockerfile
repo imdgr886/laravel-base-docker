@@ -41,6 +41,7 @@ RUN docker-php-ext-configure \
     exif \
     zip
     
+RUN sed -i 's/listen = 9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY opcache.ini $PHP_INI_DIR/conf.d/
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
