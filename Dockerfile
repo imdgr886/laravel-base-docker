@@ -44,10 +44,10 @@ RUN docker-php-ext-configure \
     
 COPY run.sh /app/run.sh
     
-RUN sed -i 's/listen = 9000/listen = /run/php/php7.4-fpm.sock/' /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN sed -i "s/listen = 9000/listen = \/run\/php\/php7.4-fpm.sock/" /usr/local/etc/php-fpm.d/zz-docker.conf
 RUN sed -i 's/user nginx/user www-data/' /etc/nginx/nginx.conf
-RUN mkdir /run/nginx && touch /run/nginx/nginx.pid && \
-    mkdir /run/php && touch /run/php/php7.4-fpm.sock && \
+RUN mkdir /run/nginx && \
+    mkdir /run/php && \
     chmod +x /app/run.sh
     
 COPY opcache.ini $PHP_INI_DIR/conf.d/
