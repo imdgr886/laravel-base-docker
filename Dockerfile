@@ -44,7 +44,7 @@ RUN docker-php-ext-configure \
     
 COPY run.sh /app/run.sh
     
-# RUN sed -i "s/listen = 9000/listen = \/run\/php\/php7.4-fpm.sock/" /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN sed -i "s/listen = 9000/listen = \/run\/php\/php7.4-fpm.sock/" /usr/local/etc/php-fpm.d/zz-docker.conf
 RUN sed -i 's/user nginx/user www-data/' /etc/nginx/nginx.conf
 RUN mkdir /run/nginx && \
     mkdir /run/php && \
@@ -56,8 +56,7 @@ COPY nginx.www.conf /etc/nginx/http.d/default.conf
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 EXPOSE 80
-EXPOSE 9000
 
-ENTRYPOINT ["/app/run.sh"]
+CMD ["/app/run.sh"]
 
 
