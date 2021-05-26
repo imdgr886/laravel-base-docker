@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine
+FROM lslio/nginx-php-fpm:latest
 
 RUN apk add --no-cache libpng libpng-dev \
     zlib-dev \
@@ -6,8 +6,7 @@ RUN apk add --no-cache libpng libpng-dev \
     libxml2-dev \
     bzip2-dev \
     zip \
-    libzip-dev \
-    nginx
+    libzip-dev
 
 # Add Production Dependencies
 RUN apk add --update --no-cache \
@@ -41,22 +40,5 @@ RUN docker-php-ext-configure \
     bcmath \
     exif \
     zip
-    
-COPY run.sh /app/run.sh
-    
-RUN sed -i "s/listen = 9000/listen = \/run\/php\/php7.4-fpm.sock/" /usr/local/etc/php-fpm.d/zz-docker.conf
-RUN sed -i 's/user nginx/user www-data/' /etc/nginx/nginx.conf
-RUN mkdir /run/nginx && \
-    mkdir /run/php && \
-    chmod +x /app/run.sh
-    
-COPY opcache.ini $PHP_INI_DIR/conf.d/
-COPY nginx.www.conf /etc/nginx/http.d/default.conf
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-
-EXPOSE 80
-
-CMD ["/app/run.sh"]
-
-
